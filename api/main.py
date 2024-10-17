@@ -4,11 +4,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.exc import SQLAlchemyError
 from starlette.responses import JSONResponse
 from starlette.requests import Request
-from api.routers import metrics  # Adjust import path correctly
+from api.routers import metrics  # Only metrics for now
 
 app = FastAPI()
 
-# Allow React frontend to communicate with FastAPI backend
+# CORS middleware for frontend-backend communication
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],
@@ -16,8 +16,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-# Include the metrics router without doubling the /api prefix
-app.include_router(metrics.router, prefix="/api", tags=["Metrics"])
+
+# Include metrics router
+app.include_router(metrics.router, prefix="/api/metrics", tags=["Metrics"])
 
 # Validation error handler
 @app.exception_handler(RequestValidationError)
